@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel narrow">
+  <h1>Check your medications</h1>
+  <p class="sub">Enter up to {{ max_drugs }} drug names (brand or generic) to see their official label interaction/warning text, and whether any mention each other directly.</p>
+
+  {% if error %}<div class="error-box">{{ error }}</div>{% endif %}
+
+  <form method="POST" action="{{ url_for('check') }}" class="form">
+    {% for i in range(1, max_drugs+1) %}
+    <label for="drug{{ i }}">Drug {{ i }}{{ '' if i <= 2 else ' (optional)' }}</label>
+    <input type="text" id="drug{{ i }}" name="drug{{ i }}" placeholder="e.g. {{ 'ibuprofen' if i==1 else ('warfarin' if i==2 else 'amoxicillin') }}">
+    {% endfor %}
+    <button type="submit" class="btn-primary">Check interactions</button>
+  </form>
+</section>
+{% endblock %}

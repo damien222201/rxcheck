@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel narrow">
+  <h1>Spotting a fake</h1>
+  <p class="sub">RxCheck can't reliably tell a real drug from a counterfeit by looking at a description or photo — nobody can do that safely without lab testing. What it <em>can</em> do is point you to NAFDAC's own general guidance.</p>
+
+  <ul class="checklist">
+    {% for item in checklist %}<li>{{ item }}</li>{% endfor %}
+  </ul>
+
+  <h2>Official NAFDAC resources</h2>
+  <ul class="link-list">
+    {% for name, url in links.items() %}
+    <li><a href="{{ url }}" target="_blank" rel="noopener">{{ name }} ↗</a></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

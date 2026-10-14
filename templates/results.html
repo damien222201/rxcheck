@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel">
+  <h1>Results</h1>
+  <p class="sub">Real excerpts from FDA-approved drug labels — read the full context before drawing conclusions, and confirm with a pharmacist.</p>
+
+  {% if not_found %}
+    <div class="error-box">
+      Couldn't find a label for: <strong>{{ not_found|join(', ') }}</strong>. Try the generic name, or check spelling.
+    </div>
+  {% endif %}
+
+  {% for card in drug_cards %}
+    <div class="drug-card">
+      {% if card.found %}
+        <h2>{{ card.display_name }} <span class="queried-as">(searched as "{{ card.query }}")</span></h2>
+
+        {% if card.cross_mentions %}
+          <div class="cross-alert">
+            <strong>⚠ Mentions other drugs you entered:</strong>
+            {% for cm in card.cross_mentions %}
+              <div class="cross-item">
+                <div class="cross-label">Re: {{ cm.other_drug }}</div>
+                {% for excerpt in cm.excerpts %}<p class="excerpt">"{{ excerpt }}"</p>{% endfor %}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if card.drug_interactions %}
+          <h3>Drug interactions (full label section)</h3>
+          {% for section in card.drug_interactions %}<p class="label-text">{{ section }}</p>{% endfor %}
+        {% endif %}
+
+        {% if card.warnings %}
+          <h3>Warnings</h3>
+          {% for section in card.warnings %}<p class="label-text">{{ section }}</p>{% endfor %}
+        {% endif %}
+
+        {% if not card.drug_interactions and not card.warnings %}
+          <p class="empty-note">No interactions or warnings section found on file for this label.</p>
+        {% endif %}
+      {% else %}
+        <h2>{{ card.query }}</h2>
+        <p class="error-box">Could not look this one up{{ ' (' + card.error + ')' if card.error else '' }}.</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+
+  <a href="{{ url_for('index') }}" class="btn-secondary">← Check different drugs</a>
+</section>
+{% endblock %}
